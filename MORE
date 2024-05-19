@@ -1,0 +1,237 @@
+#include <iostream>
+#include<cstring>
+#include<string.h>
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+//class number{
+//    int n;
+//public:
+//    void print(){
+//        cout<<n;
+//    }
+//    number(int x)
+//    {
+//        this->n=x;
+//    }
+//    operator int(){//syntax ; operator datatype;
+//        return n;
+//    }
+//};
+
+//
+//class triangle;
+//
+//class rectangle{
+//    int width,length,area;
+//public:
+//    rectangle(int w, int l)
+//    {
+//        width=w;length=l;area=length*width;
+//    }
+//    void output(){
+//        cout<<"length : "<<length<<" width : "<<width<<" area : "<<area<<endl;
+//    }
+//
+//    rectangle(triangle );
+//};
+//
+//
+//class triangle{
+//    int base,height;
+//    float area;
+//public:
+//    triangle(int b,int h)
+//    {
+//        base =b;
+//        height=h;
+//        area=base*height;
+//    }
+//    void print(){
+//        cout<<"base : "<<base<<" height : "<<height<<" area : "<<area<<endl;
+//    }
+//
+//    operator rectangle()
+//    {
+//        rectangle temp(base,height);
+//        return temp;
+//    }
+//    friend class rectangle;
+//};
+//
+//
+//rectangle::rectangle(triangle t)
+//{
+//  length=t.base;
+//  width=t.height;
+//  area=length*width;
+//}
+//
+
+
+
+
+//OPERATOR OVERLOADING USING FRIEND FUNCTIONS :
+class complex{
+    int r;
+    int i;
+public:
+    void read(){
+        cout<<"enter real and imaginary values : "<<endl;
+        cin>>r;
+        cin>>i;
+    }
+    void print(){
+        cout<<"real  : "<<r<<" imaginary : "<<i<<endl;
+    }
+
+
+    friend complex operator + (complex c1,complex c2);//since it is a friend function
+    // it doesnt have any default operand
+
+};
+
+//complex operator +(complex c1,complex c2)
+//{
+//    complex t;
+//    t.r=(c1.r+c2.r);
+//    t.i=(c1.i+c2.i);
+//    cout<<"inside operator c1 :\n real : "<<c1.r<<" img : "<<c1.i<<endl;
+//    cout<<"inside operator c2 :\n real : "<<c2.r<<" img : "<<c2.i<<endl;
+//    cout<<"inside operator t :\n real : "<<t.r<<" img : "<<t.i<<endl;
+//    return t;
+//}
+//
+
+
+
+
+class str{
+    char *p;
+    int len;
+public:
+    str(){
+        len=0;p=0;
+    }
+    str(char* s){
+        len=strlen(s);
+        p=new char[len+1];
+        strcpy(p,s);
+    }
+    ~str(){
+        delete p;
+    }
+    void print(){
+        cout<<"the string is  : "<<p<<endl;//char gets directly dereference dso no need
+        //to use dereferencing pointer;
+    }
+    str operator + (str &s2){
+        str temp;
+        temp.len=s2.len+len;
+        cout<<"length of temp is  : "<<temp.len<<endl;
+        temp.p=new char[temp.len+1];
+        strcpy(temp.p,p);
+        strcat(temp.p,s2.p);
+        return temp;
+
+    }
+};
+
+
+
+
+
+
+
+int main(){
+    //type conversion :
+//    int y;
+//    float n=2.3;
+//    y=n;
+//    cout<<y;//n converted to int
+    //but automatic type conversion cant work on user defined data types
+    //we have to define operator fucntions (cast opertaorf
+    //  functions) for performing conversions with user defined types
+
+
+
+    //BASIC TO CLASS TYPE: we use single argument constructor for this conversion :
+//    number num=100;//the constrictor converts int to class member;
+//    num.print();
+
+    //class to basic;
+//    int x=num;//cant convert object to int automatically
+//    //we need to define casting operator function with no returmn type and no parameter
+//    cout<<endl<<"value of x : "<<x<<endl;
+
+
+
+//class to class
+//achieved by defining casting operator function in source class or using constructot in destination class;
+
+//triangle t(10,20);
+//triangle t(10,20);
+//rectangle r=t;//this will give error
+//either we use casting operator intriangle class
+//or use constructor in rectangel
+//t.print();
+//r.output();//using typecobversion casting opertor
+
+//using constructor
+
+//triangle t1(100,200);
+//rectangle r1(t1);
+//t1.print();
+//r1.output();
+
+
+
+
+//
+////OPERATOR OVERLOADING USING FRIEND FUNCTIONS :
+//complex c1,c2,c3;
+//c1.read();
+//c1.print();
+//c2.read();
+//c2.print();
+//c3=c1+c2;
+//cout<<"calling  : "<<endl;
+//c3.print();
+
+
+
+
+
+
+//string manipulation usinf operator overloading :
+
+//str s1("hello"),s2(" world");
+//str s3=s1+s2;
+//
+//s1.print();
+//s2.print();
+//s3.print();
+
+
+string arr[3]={"banana","grapes","apple"};
+//for (int i=0;i<=2;i++)
+//{
+//    for (int j=0;j<2-i;j++)
+//    {
+//        if(arr[j]>arr[j+1])
+//        {
+//            swap(arr[j],arr[j+1]);
+//        }
+//    }
+//}
+sort(arr,arr+3);
+for (int i=0;i<3;i++)
+{
+    cout<<arr[i]<<" ";
+}
+
+
+
+}
