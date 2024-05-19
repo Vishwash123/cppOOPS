@@ -1,0 +1,229 @@
+#include <iostream>
+#include<exception>
+#include<stdexcept>
+using namespace std;
+
+
+//ERROR HANDLING EXCEPTION HANDLING :  HANDLING RUN TIME ANOMALIES. WE NEED TO RESPOND TO AN EXCEPTIONAL
+//OCCURENCE
+
+//3 KEYWORDS : TRY , CATCH , THROW
+//THERE ARE SOME STANDARD EXCEPTIONS IN CPP IN EXCEPTION HEADER FILE;
+
+
+
+
+void test() noexcept(false)// or throw(type of exceptions thrown by function)
+//if you write throw() or noexcept(true) then the functionc ant throw errors;
+//is you write
+{
+    throw runtime_error("hello");
+
+
+}
+
+
+
+
+
+
+
+class overspeed:public exception{
+    int speed;
+public:
+    void setspeed(int n)
+    {
+        speed=n;
+    }
+
+    const char* what(){
+        return "check your car speed\nslow down";
+    }
+    void getspeed(){
+        cout<<speed;
+    }
+
+};
+
+
+
+
+
+
+class car{
+    int speed;
+public:
+    car(){
+        speed=0;
+        cout<<"speed is zero"<<endl;
+    }
+    void accelerate(){
+        while(true)
+        {
+            speed+=10;
+            cout<<"speed is : "<<speed<<endl;
+            if (speed>250)
+            {
+                 overspeed s;
+                //s.setspeed(speed);
+                throw ;
+            }
+        }
+    }
+};
+
+
+
+
+
+
+
+
+int main() {
+//
+//
+//    int n=10;
+//    int b=0;
+//    int c;
+////    c=n/b;//failed becuase of divivde by zero error
+//
+////handling :
+//try{//try is used to try a code which may prodcude an error
+//    if (b==0)
+//    {
+//        throw "divide by zero error";//when an error is thrown the statements next to throw statement will not
+//        //be executed and the control shifts to catch block
+//    }
+//    c=n/b;
+//
+//    cout<<c<<endl;}
+//
+//
+////to handle it :
+//catch(const char *s){
+//    cout<<"Exception occured"<<endl<<s;
+//}
+
+
+
+
+//standard exception
+
+
+//
+//
+//
+//    int a = 10, b = 0, c;
+//    try {
+//        if (b == 0) {
+//            throw runtime_error("divide by zero error");
+//
+//
+//            c = a / b;
+//            cout << c << endl;
+//        }
+//    }
+//    catch (runtime_error &e) {
+//        cout << "exception occured" << endl;
+//        cout << e.what() << endl;
+//
+//
+//    }
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//    try{
+//        throw "some exception";//the compiler know which catch block to run based on the exception thrown
+//        throw 20;
+//        //throw runtime_error("runtime error");
+//    }
+////    catch(const char *e){//this will work for exception string type
+////        cout<<e<<endl;
+////    }
+////
+//
+//    catch(int er){//exception int type
+//        cout<<er<<endl;
+//    }
+//
+////    catch(runtime_error e) {//runtime error type;
+////        cout << e.what() << endl;
+////    }
+//
+//
+//  catch(...){//if any other matching catch block isnt found this one runs;
+//      //NOTE : this is called catch all handler and must come in last when multiple catch blocks are written;
+//      //otherwise error occurs
+//      cout<<"this catch block works for any type of exception"<<endl;
+//  }
+
+
+
+
+
+//
+//try{
+//    test();
+//}
+//catch(runtime_error e)//for run  time errors we need to make runtime block as well
+//{
+//    cout<<e.what()<<endl;
+//}
+//
+//
+//catch(...){
+//    cout<<"not runtime error"<<endl;
+//}
+
+
+
+//try{
+//
+//    try{
+//        throw "a charcater exception";
+//    }
+//    catch(const char *e){
+//        cout<<"character type in inner block"<<endl;
+//        throw;//rethrows the same and the next apt catch block it finds will run
+//        //after this it stops executing next statements and goes directly to check catch
+//        // blocks;
+//}
+//    throw 1;//will find the
+//}
+//catch(const char *e) {
+//    cout << "character type in outer block" << endl;
+//
+//}
+//
+//
+//catch(...){
+//    cout<<"unexpected exception in outer block"<<endl;
+//}
+
+
+
+//user defined exception header file :
+car c;
+try{
+c.accelerate();}
+catch(overspeed &e){
+    cout<<e.what()<<endl;
+}
+
+    }
+
+
+
