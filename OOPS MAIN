@@ -1,0 +1,2275 @@
+#include <iostream>
+#include<bits/stdc++.h>
+#include<string.h>
+using namespace std;
+
+
+
+
+//PADDING AND GREEDY ALIGNMENT : PADDING MEANS ADDING EXTRA MEMORY BYTES SO AS TO AKE ACCESSING BVARIABLES
+//MORE EFFICIENT
+//GREEDY ALIGNMENT : METHOD TO ALIGN DATA IN SUCH A WAY THAT IT MAY USE MORE MEMORY BUT WILL BE MORE EFFICIENT
+//WHEN TRYING TO ACCESS;
+
+
+
+
+
+// BASICS :
+
+class empt{
+
+};
+
+
+
+
+class demo{
+private://private members can only be accessed inside the class
+    int ph_no;
+    int age;
+public ://public members can be accessed even outside the class
+    string name;
+    int rollno;
+
+
+    static int static_counter;//static members are independent of the class they carry same value to all objects
+    //and can be changed in any objects or even wuthout objects. They need to be initialized outsuide the class
+   //no need to create objects to dealm with it.
+   // static values can only be accessed in functions by static functions
+   //they live on until the function ends thatw hy their destructor is called after function ends
+
+
+   static void demostat(){//can only access static members but not others;
+       cout<<"This is a static function which can access static values"<<endl;
+       cout<<static_counter<<endl;
+       static_counter+=1;
+//       cout<<rollno; since roll no is not static it throws an error
+   }
+
+    void get_ph_no(){//getter get values of private members
+        cout<<ph_no<<endl;
+
+    }
+   void set_ph_no(int n){ //setter : set values of private members
+        this->ph_no=n;
+    }
+    void  set_age(int n){
+       this-> age=n;
+    }
+    void get_age(){
+        cout<<age<<endl;//getter and setter can also be used for coditions on setting and accessing
+
+    }
+//
+    demo(){//constructor is a special function with no return type. Whenever an object is declared
+          // constructor is called even if it isnt made by us. it is called default constructor.
+          //it looks like this constructor but without the cout
+         cout<<"constructor called"<<endl;
+    }
+
+    demo(string name,int rollno) {
+        cout << "parameterized constructor" << endl;
+        this->name = name;
+        this->rollno = rollno;
+    }
+
+    //WHEN NO COPY CONSTRUCTOR IS FOUND IN CLASS THEN COMPILER SUPPLIUES ITS OWN;
+    // NOTE :  COPY CONSTRUCTOR SHOULD BE USED ON DECLARATION IF WE DECLARE FIRST AND THEN TRU=Y TO USE IT IT
+    //WONT BE INVOKED AND THROW AN ERROR BECUASE AA COSNTRUCTOR IS ALREADY CALLED THEN NO NEED OF
+    // ANOTHER CONSTRUTOR FOR THE SAME OBJECT;
+
+    //SHALLOW COPY(DEFAULT COPY CONSTRUCTOR) :
+    demo(demo &temp){
+        cout<<"Made up copy cconstructor : "<<endl;
+        string name;
+        this-> name=temp.name;
+        this->age=temp.rollno;
+    }
+
+
+    ~demo(){//a special function with no return value which is called when the object is oout of scope
+        // if an object is declared in main when main ends destructor is called which clears up memory
+        cout<<"Destructor called"<<endl;
+    }// dstructors are called in reverse order of object declared
+//for static allocation destructor is called automatically but not for dynamic because we need to use deleet kley word for it;
+
+     void sayhello();//declaring function inside the class
+     void nest();//nesting members
+     void sayname();
+};
+
+void demo::sayname(){
+    cout<<name<<endl;
+}
+
+
+
+void demo::sayhello(){//defining function outside the class. :: = scope resolution operator
+    cout<<"Hello"<<endl;
+}
+
+ int demo::static_counter=0;
+
+void demo::nest(){
+    sayhello();//no need of object to access it;
+    cout<<"Demonstrating nested members nest function contains sayhello"<<endl;
+}
+
+
+
+
+
+// FRIEND FUNCTIONS AND CLASSES :
+
+
+class complx;//we decalre the class before calculator so that it can know that complex class exists
+//other wise it wont know and throw error
+
+
+class calculator{//note : declare the friend class above
+public :
+    int add(int a,int b)
+    {
+        return a+b;
+    }
+//    int sumrealcompc(complx o1,complx o2)//it throws an error because it knows complx existsbut doesnt know if
+//    //bojects ahve been declared or not.see below this function
+//    {
+//        return (o1.a+o2.a);//it doesnt have access to private memebrs of complx yet
+//    }
+
+//to tackle the object problem we just declare the function  in here and define it after making class complx
+//so that it knows about its objects :
+int sumrealcompc(complx ,complx );//objects not defined yet so dont write them
+int sumcompcompc(complx,complx);
+};
+
+
+
+class complx{
+    int r,c;
+public:
+    void set_number(int n1,int n2){
+        r=n1;
+        c=n2;}
+
+    void print_number(){
+        cout<<r<<"+"<<c<<"i"<<endl;
+    }
+    friend complx sumcmp(complx o1,complx o2);//note : this declaration doesnt mean that this friend function
+    //is a member of the class you cant access it using objects; like c1.sumcmp() wont work;
+    //i.e. it is not in the scope of the class
+    //can be declared anywhere even in private
+    //they cant access the members directly by their names and need objects to do it like sumcmp(o1.r,o2.c) etc
+
+
+
+
+//    friend int calculator :: sumrealcompc(complx ,complx );//making a function of another class friend
+
+
+    //now if we want multiple functions of another class to have access to privates of this class
+    //then instead of doing it one by one we make the entire class friend;
+
+
+
+    //say we need to make multiple functions of another class friends.
+    //either we do it one by one
+
+//    friend int calculator::sumcompcompc(complx,complx);
+
+    //but then if we have to do this for multiple fucntions it becomes too much work
+    //so instead we can make the entire class our friend
+
+
+    //so comment out above friend functions declarations and do this
+    friend class calculator;
+
+
+
+
+
+};
+
+
+// FRIEND FUNCTION :
+complx sumcmp(complx o1,complx o2){//the class doesnt know anything about this functyion
+    complx o3;
+    o3.set_number(o1.r+o2.r,o1.c+o2.c);//here we get an error becuase we try to access private
+    //members of complex outside of the class.
+    //so we need permission from the complx class to use its private data by making it our friend
+    return o3;//no need to use objects to access it
+
+}
+
+
+
+
+
+
+
+//class calculator{
+//public :
+//    int add(int a,int b)
+//    {
+//    return a+b;
+//    }
+//    int sumrealcompc(complx o1,complx o2)
+//    {
+//    return (o1.a+o2.a);//it doesnt have access to private memebrs of complx yet
+//    }
+//
+//};
+
+
+//declaring the function after complex so that the fucntion knows about its objects :
+int calculator:: sumrealcompc(complx o1,complx o2){
+    return (o1.r+o2.r);
+}
+
+int calculator::sumcompcompc(complx o1,complx o2){
+    return (o1.c+o2.c);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+// MEMORY ALLOCATION USING ARRAYS :
+class shop{
+    //since one shop can have many items i.e. one object of shop will have multiple item properties
+    //so we can create an array for it
+    int item_id[100];//can also allocate dynamically
+    int item_price[100];
+    int counter;
+public:
+    void initcounter();
+    void setpriceid();
+//    void getprices();
+//    void getids();
+    void getpriceandid();
+
+
+
+};
+
+void shop::initcounter(){
+    this->counter=0;
+}
+
+void shop::setpriceid() //since we are working with arrays we use a counter  and since we need to increment
+{                       //this counter for everyitem we need to do take input together ptherwise we can use
+                        //objects in main fucntion to increment
+    cout<<"Enter the id of the item : ";
+    cin>>this->item_id[counter];
+    cout<<"Enter the price of the item : ";
+    cin>>this->item_price[counter];
+
+    this->counter++;
+
+}
+
+//void shop::getprices()
+//{
+//    for (int i=0;i<counter;i++)
+//    {
+//        cout<<this->item_price[counter]<<endl;
+//    }
+//}
+//
+//
+//void shop::getids()
+//{
+//    for (int i=0;i<counter;i++)
+//    {
+//        cout <<this->item_id[counter] << endl;
+//    }
+//
+//}
+
+//to make it practical we show both together :
+void shop::getpriceandid()
+{
+    for (int i=0;i<counter;i++)
+    {
+        cout<<"The price of the item with id "<< this->item_id[i]<<" is "<<this->item_price[i]<<endl;
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//OBJECT ARRAYS AND ARGUMENTS :
+
+class employee{
+    int id;
+    int salary;
+public:
+    void setid();
+    void getid();
+};
+
+
+
+void employee::setid()
+{
+    this->salary=122;
+    cout<<"Enter the employee id : ";
+    cin>>this->id;
+}
+
+
+void employee::getid()
+{
+    cout<<"The id of the employee is : "<<this->id<<endl;
+}
+
+
+
+
+
+
+class complex2{
+public:
+    int a;
+    int b;
+    void setdata(int a1,int a2)
+    {
+        a=a1;
+        b=a2;
+    }
+    void setdatabysum(complex2 o1,complex2 o2)
+    {
+        a=o1.a+o2.a;
+        b=o2.b+o1.b;
+    }
+
+    void printnumber()
+    {
+        cout<<"No is : "<<a<<" + "<<b<<"i"<<endl;
+    }
+};
+
+
+
+class y;
+
+
+class x{
+    int data;
+public:
+    void setvalue(int value)
+    {
+        data=value;
+    }
+    friend void add(x,y);
+friend class y;
+};
+
+
+class y{
+    int num;
+public:
+    void setvalue(int value)
+    {
+        num=value;
+    }
+//    void add2(x o1,y o2){
+//        cout<<o1.data+o2.num<<endl;
+//    }
+    friend void add(x,y);
+};
+
+
+void add(x o1,y o2)
+{
+    cout<<"adding objects of x and y : "<<o1.data+o2.num<<endl;
+}
+
+
+
+class c2;
+
+class c1{
+    int val;
+public:
+    void indata(int a){
+        val=a;
+    }
+    void display()
+    {
+        cout<<val<<endl;
+    }
+    friend void exchange(c1&,c2&);
+};
+
+
+
+
+class c2{
+        int val2;
+        public:
+        void indata(int a){
+            val2=a;
+        }
+        void display()
+        {
+            cout<<val2<<endl;
+        }
+        friend void exchange(c1&,c2&);
+};
+
+
+
+void exchange(c1& x,c2& y)
+{
+    swap(x.val,y.val2);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+//CONSTRUCTOR OVERLOADING : IT CAN HELP US TO CREATE DIFFERENT TYPES OF OBJECTS.
+class overloading{
+    int a;
+    int b;
+public :
+    overloading()
+    {
+    cout<<"DEFAULT CONSTRUCTOR"<<endl;
+    a=0;
+    b=0;
+    }
+    overloading(int x,int y)
+    {
+    cout<<"PARAMETERIZED CONSTRUCTOR 1"<<endl;
+    a=x;
+    b=y;
+    }
+    overloading(int x)
+    {
+        cout<<"PARAMETERIZED CONSTRUCTOR 2"<<endl;
+    a=x;
+    b=0;
+    }
+    void print(){
+    cout<<"THE NUMBER IS : "<<a<<" + "<<b<<"i"<<endl;
+}
+};
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+//CONSTRUCTOR WITH DEFAULT ARGUMENTS
+class simple{
+    int data1;
+    int data2;
+public:
+
+    simple(int a,int b=9)
+    {
+        data1=a;
+        data2=b;
+
+    }
+
+    void printdata()
+    {
+        cout<<data1<<" "<<data2<<endl;
+    }
+};
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+class bankdeposit{
+    int principle;
+    int years;
+    float interestrate;
+    float returnvalue;
+public:
+    bankdeposit(){
+      //THIS CONSTRUCTOR DOES NOTHING. BUT A COMPILER ALWAYS NEEDS A CONSTRUCTOR THAT DOES NOTHING
+      //IF YOU WANNA MAKE ONE OR MORE CONSTRUCTOR MANUALLY. BECAUSE COMPILER HAS TO SEARCH FOR A OSNTRUCTOR
+      //WHENEVER AN OBJJECT IS MADE AND IF WE MAKE ANY CONSTRUCTOR MANUALLY IT IGNORES THE DEFAULT CONSTRUCTOR
+      //THATS WHY IF WE COMMENT OUT THIS CONSTRUCTOR THEN IT WILL SHOW ERROR BECUASE WHEN BD1,BD2,BD3 ARE
+      //DECLARED WE DECLARE THEM WITHOUT PARAMETERS AND SO THEY LOOK FOR  A SIMPLE CONSTRUCTOR BUT DONT FIND ANY
+      //HOWEVER IF WE HADNT MADE ANY MANUAL CONSTRUCTOR THEN THE DEFAULT CONSTRUCTOR WPULD RUN WITH NO ERROR
+      //TRY IT OUT;
+    }
+
+    bankdeposit(int p,int y,float r);//r can be a value like 0.04
+
+
+    bankdeposit(int p,int y,int r);//r can be a value like 14
+
+    void show();
+};
+
+
+bankdeposit::bankdeposit(int p ,int y,float r)
+{
+    principle=p;
+    years=y;
+    interestrate=r;
+    returnvalue=principle;
+    for (int i=0;i<years;i++)
+    {
+        returnvalue*=1+interestrate;
+    }
+}
+
+
+bankdeposit::bankdeposit(int p ,int y,int r)
+{
+    principle=p;
+    years=y;
+    interestrate=(float(r)/100);
+    returnvalue=principle;
+    for (int i=0;i<years;i++)
+    {
+        returnvalue*=(1+interestrate);
+    }
+}
+
+
+
+void bankdeposit::show(){
+
+    cout<<endl<<"Principle amount was "<<principle
+        <<endl<<"Return value after "<<years<<" is "<<returnvalue<<endl;
+}
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+//UNDERSTANDING COPY CONSTRUCTOR :
+
+class cpy{
+public:
+    char *name;
+    string *x;
+public:
+    void setname(char nme[])
+    {
+        this->name=nme;
+
+    }
+    void getname(){
+        cout<<name<<endl;
+    }
+};
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+//INHERITAAAAAANCE :
+//IN CPP WE CAN REUSE A CLASS AND ADD ADDITITONAL FEATURES TO IT. IT SAVES TIME AND MONEY
+//REUSING ALREADY TESTED AND DEBUGGED CLASS WILL SAVE A LOT OF TIME AND EFFORTSIN DEVELOPOING AND DEBUGGING THE
+//SAME THING AGAIN AND AGAIN.
+
+//EXAMPLE : A PROGRAMMER CLASS WILL CARRY ALL MEMBERS OF EMPLOYEE CLASS IN A COMPANY
+//NOTE : REPITION IS NOT A GOOD PRACTICE : DRY : DONT REPEAT YOURSELF . IT WILL SAVE YOU FROM MAKING
+//CHANGES IN SEVERAL PLACES
+
+//THE CONCEPT OF REUSABILITY IS SUPPORTED USING INHERITANCE
+//WE CAN REUSE PROPERTIES OF AN EXISTING CLASS BY INHERITING FROM IT
+//EXISTING CLASS IS CALLED BASE CLASS
+//NEW CLASS WHICH IS INHERITED FROM BASE CLASS IS CALLED DERIVED CLASS
+//THERE CAN BE MULTIPLE BASE CLASSES ADN MULTIPLE DERIVED CLASSES
+
+
+
+
+//TYPES OF INHERITANCE :
+// SINGLE INHERITANCE : 'ONE' DERIVED CLASS IS DERIVED FROM 'ONE' BASE CLASS. EMPLOYEE->PROGRAMMER
+//                       PROGRAMMER IS MADE FROM EMPLOYEE AND IT EXTENDS IT FURTHER
+// DIAGRAM :
+/*
+ *         A
+ *         |
+ *         |
+ *         V
+ *         B     B DERIVED FROM A;
+ */
+
+
+
+// MULTIPLE INHERITANCE : A DERIVED CLASS WITH 'MORE THAN ONE' BASE CLASS
+/*
+ *        A         B
+ *        |         |
+ *        |_________|
+ *             |
+ *             |
+ *             V
+ *             C
+ */
+
+
+// HIERARCHIAL INHERITANCE : SEVERAL DERIVED CLASSES FROM ONE BASE CLASS
+/*
+ *
+ *             A
+ *             |
+ *             |
+ *         ----------
+ *         |        |
+ *         |        |
+ *         V        V
+ *         B        C
+ */
+
+
+
+
+// MULTILEVEL INHERITANCE : DERIVNG A CLASS FROM ALREADY EXISTING DERIVED CLASS
+/*
+ *           A  ANIMAL
+ *           |
+ *           |
+ *           V
+ *           B  MAMMAL  = HAS ALL FUNCTIONS OF ANIMAL CLASS AND SOME MORE OF ITS OWN
+ *           |            ANIMAL + MORE
+ *           |
+ *           V
+ *           C  COW/HUMAN ETC = HAS ALL FUNCTIONS OF MAMMAL CLASS (AND TRANSITIVELY ALL FUCNTIONS OF ANIMAL)
+ *                              AND SOME MORE OF ITS OWN
+ *                              MAMMAL + MORE
+ */
+
+
+
+
+
+
+// HYBRID INHERITANCE : COMBINATION OF MULTIPLE , HIERARCHIAL INHERITANCE
+//                      LOOKING AS A WHOLE ALSO LOOKS LIKE ( MULTILEVEL INHERITANCE )
+/*
+ *                A   EMPLOYEE
+ *                |
+ *                |
+ *                V
+ *          -------------
+ *          |           |
+ *          |           |
+ *          V           V
+ *   PROG   B           C   ADMIN
+ *          |           |
+ *          |           |
+ *          V           V
+ *          -------------
+ *                |
+ *                |
+ *                V
+ *                D
+ *             MANAGER
+ *
+ *
+ *
+ */
+
+
+
+//Base Class :
+
+class emp{
+public:
+    int id;
+    float salary;
+public :
+    emp(int id){
+    cout<<"emp constructor parameterized"<<endl;
+    this->id=id;
+    salary=34;
+}
+    emp(){
+     cout<<"emp constructor default but made by us "<<endl;
+}
+public:
+    void getdata()
+    {
+    cout<<id<<" : "<<salary<<endl;
+    }
+};
+
+
+
+
+//Derived Class
+
+//syntax : class {{derivedclassname}} : {{visibilitymode}} {{baseclassname}}
+//visibility mode is of the inheritance : publicly or privately
+
+//NOTE : PRIVATE MEMBERS CANT BE ACCESSED BY THE DERIVED CLASS cant be inherited
+
+//Publicly inheriting means :  public members of base class become public members of derived class
+//privately inherititng means : public memebrs of base class become private members of derived class
+// by default visibility mode is private
+
+
+class prog: emp{
+public:
+      int languagecode=9;
+
+      prog(int id){// if there is no default constructor in base class it will show an error because
+                   // when object is created it calls constructor of prog but since it ius derived and
+                   // carries features of emp it will call the defauklt constructor of emp first
+                   // but since we made a oarameterized constreuctor it doesnt assugn it the dafaukt one
+                   // so we have to make a default one ourselves then it wont show error
+
+            cout<<"prog constructor parameterized"<<endl;
+
+          this->id=id;// note if id in emp is private it shows an error bcoz private members arent inherited
+      }
+      prog(){
+          cout<<"default prog constructor"<<endl;
+      }
+      void getdata(){
+          cout<<id<<" : "<<salary<<endl;
+      }
+};
+
+
+class dr2:public emp{
+public:
+    dr2(){
+
+    }
+    void setid(int id){
+        this->id=id;
+    }
+};
+
+
+
+//SINGLE INHERITANCE  :
+
+//class base{
+//    int data1;//private by default and not inheritable
+//public:
+//    int data2;
+//    void setdata();
+//    int getdata1();
+//    int getdata2();
+//};
+//
+//void base::setdata(){
+//    data1=10;
+//    data2=20;
+//}
+//
+//int base::getdata1(){
+//    return data1;
+//}
+//
+//int base::getdata2(){
+//    return data2;
+//}
+//
+//
+//
+//
+//class derived:public base{
+//    int data3;
+//public:
+//    void process();
+//    void display();
+//
+//};
+//
+//
+//void derived::process(){
+//    data3=data2*getdata1();//since data1 is private qe need getter
+//
+//}
+//
+//void derived::display(){
+//    cout<<"data 3 : "<<data3<<endl;
+//    cout<<"data 2 : "<<data2<<endl;
+//    cout<<"data 1 : "<<getdata1()<<endl;
+//}
+
+
+
+
+
+//PROCTECTED ACCESS MODIFIER :
+/*                    private derivation             public derivation                protected derivation
+ *
+ * private member     not inherited                  not inherited                    not inherited
+ * public member      private                        public                           protected
+ * protected member   private                        protected                        protected
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+//class base{
+//protected://private but can be inherited used for sensitive but not that much sensitive info
+//    //basically for protected memebr : private inheritance makes it private member of the derived class;
+//    //                                 publiv inheritance makes it public member of the derived class
+//    int a;
+//private:
+//    int b;
+//};
+//
+//class derived:protected base{
+//
+//};
+
+
+
+
+
+
+
+//MULTI LEVEL INHERITANCE : A->B->C IS CALLED INHERITANCE PATH
+class student{
+protected:
+    int rollno;
+public:
+    void set_rnum(int);
+    void get_rnum();
+};
+
+void student::set_rnum(int n)
+{
+    rollno=n;
+}
+
+void student::get_rnum(){
+    cout<<"Roll no : "<<rollno<<endl;
+}
+
+
+
+class exam:public student{
+protected:
+    float maths;
+    float physics;
+public:
+    void set_marks(float,float);
+    void get_marks();
+};
+
+void exam::set_marks(float m,float p){
+    maths=m;
+    physics=p;
+}
+
+void exam::get_marks(){
+    cout<<"Maths : "<<maths<<" Physics : "<<physics<<endl;
+}
+
+
+
+class result:public exam{
+    float percentage;
+public:
+    void display();
+
+};
+
+
+void result::display(){
+    cout<<"The percentage of "<<rollno<<" is : "<<(maths+physics)/2<<endl;
+}
+
+
+
+
+
+//MULTIPLE INHERITANCE :
+// syntax :  class classname:visibility base1name,visibility base2name
+class base1 {
+protected :
+    int base1int;
+public:
+    void set_base1int(int a){
+        base1int=a;
+    }
+
+
+};
+
+
+
+class base2 {
+protected :
+    int base2int;
+public:
+    void set_base2int(int a){
+        base2int=a;
+    }
+
+
+};
+
+
+
+class derived:public base1,public base2{
+public:
+    void show(){
+        cout<<"base 1 : "<<base1int<<" base 2 : "<<base2int<<" and sum of both is : "<<base1int+base2int<<endl;
+    }
+
+}; //in this class base1itn and base2int = protected
+//                 setbase1,setbase2 and show are public.
+
+
+
+
+
+
+
+
+//AMBIGUITY : SUPPOSE MULTIPLE DIFFERENT BASE CLASSES HAVE A FUCNTION OF SAME NAME AND THEN
+//            THERE WILL BE AN ISSUE THAT IF WE CALL THAT FUCNTION FROM DERIVED CLASS WHICH ONE
+//            WILL BE CALLLED
+class b1{
+public :
+    void greet(){
+    cout<<"how are you?"<<endl;
+}
+};
+
+class b2{
+public:
+    void greet(){
+        cout<<"kaise ho"<<endl;
+    }
+};
+
+
+class d:public b1,public b2{
+    int a;
+public:
+    void greet(){//to tackle ambiguity make a function of same name and call
+        //the function of the class you want to call using scope reslution
+        b1::greet();//now everytime greet is called through d it will call greet of b1;
+    }
+
+};
+
+
+//ambiguity 2 :
+class bd{
+public:
+    void say(){
+        cout<<"hello world"<<endl;
+    }
+};
+
+class dd:public bd{
+    int a;
+public:
+    void  say(){
+        cout<<"ayo"<<endl;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//HYBRID INHERITANCE : RESOLVING DIAMOND PROBLEM :
+class stud{
+protected :
+    int rollno;
+public:
+    void set_num(int n){
+        rollno=n;
+    }
+    void print_num(){
+        cout<<"roll no : "<<rollno<<endl;
+    }
+};
+
+
+
+class test:virtual public stud{//using virtual base class can also write public virtual
+protected:
+    float maths,physics;
+public:
+    void set_marks(float m1,float m2)
+    {
+        maths=m1;
+        physics=m2;
+    }
+    void print_marks(){
+        cout<<"Maths : "<<maths<<" "<<"Physics : "<<physics<<endl;
+    }
+
+};
+
+
+
+class sports:virtual public stud{
+protected:
+    float score;
+public:
+    void set_score(float n){
+        score=n;
+    }
+    void print_score(){
+        cout<<"pt score is : "<<score<<endl;
+    }
+};
+
+
+
+
+class res:public test, public sports{
+private:
+    float total;
+public:
+    void display(){
+        total=maths+physics+score;
+        print_num();
+        print_marks();
+        print_score();
+        cout<<total<<endl;
+    }
+};
+
+
+
+
+//CONSTRUCTOR IN DERIVED CLASS  :
+//ORDER OF EXECUTION :
+
+
+/*
+ *
+ * class a:public b{
+ * first a constructor
+ * then b
+ *
+ * }
+ *
+ *
+ *
+ * class a:public b,public c{
+ *
+ * b ,c a
+ *
+ * }
+ *
+ *
+ *
+ *
+ * class a:public b,virtual public c{
+ *
+ * virtual class is given preference
+ *      c , b , a
+ *
+ * }
+ *
+ *
+ */
+
+
+
+
+
+
+class b4{
+    int data;
+public:
+    b4(int i)
+    {
+        data=i;
+        cout<<"b class constructor "<<endl;
+    }
+    void printdatab1(){
+        cout<<"value of data : "<<data<<endl;
+    }
+    b4(){};
+};
+
+
+class b2_0{
+    int data2;
+public:
+    b2_0(int x)
+    {
+        data2=x;
+        cout<<"b2_0 class constructor "<<endl;
+    }
+    void printdatab2(){
+        cout<<"value of data2 : "<<data2<<endl;
+    }
+    b2_0(){}
+};
+
+
+class d2_0:public b4,virtual public b2_0{
+    int derived1,derived2;
+public:
+    d2_0(int a,int b,int c,int d):b4(a),b2_0(b){
+
+        derived1=c;
+        derived2=d;
+        cout<<"dervied constructor caleld  "<<endl;
+    }
+    void printdata(){
+        cout<<"value of derived 1 : "<<derived1<<endl;
+        cout<<"value of derived 2 : "<<derived2<<endl;
+    }
+
+};
+
+
+
+
+
+
+
+class arrayclass{
+public:
+    int p;
+    int q;
+};
+
+
+
+
+//POLYMORPHISM :
+
+
+//COMPILE TIME POLYMORPHISM :
+//much simpler than run time polymorphism. it means that object is bound to function call during compie time
+//that means it is alrwady decided during compile time which function will work. also called STATIC BINDING
+//OR EARLY BINDING.
+//it can be achieved through "function overloading" and "operator overloading"
+
+//NOTE : ::  .   .*     ?:       THESE 4 OPERATORS CANT BE OVERLOADED
+
+class poly1{
+
+public:
+    int a;
+    void sayhello(){
+        cout<<"hello me"<<endl;
+    }
+    void sayhello(string name){
+        cout<<"hello "<<name<<endl;
+    }
+//    int sayhello()  // wont work not allowed to overload
+//    {
+//        cout<<"hello me"<<endl;
+//    }
+    int sayhello(int n,string s)
+    {
+        cout<<"hello person "<<n<<" : "<<s<<endl;
+        return 1;
+    }
+
+    int sayhello(string s,int n) //even changing position of parameters work
+    {
+        cout<<"he he "<<endl;
+    }
+
+
+    //operator overloading :
+    //syntax :
+    //return type "operator"(word)  operator(+,-,etc)(input second operand )
+    //mening incase of + we have 2 operand a+b = operand are a and b
+    //in oops a is the current object(this pointer points to this object) and the second operand is taken
+    //as  input
+    //ALSO CALLED LATE BINDING
+
+
+    void operator+ (poly1& p)//binary operstors
+    {
+        int value1=this->a;
+        int value2=p.a;
+        cout<<"output : "<<value2-value1<<endl;
+
+    }
+
+    void operator-(int x)
+    {
+        cout<<"this would have subtracted but i overloaded it"<<endl;
+    }
+    int operator*(int y) {
+        int value1=this->a;
+        cout << "should multiply but wont instead divides coz i overloaded it" << endl;
+        return a/y;
+    }
+
+    //unary oprator
+
+    void operator()(){
+        cout<<"bracket yo"<<endl;
+    }
+
+};
+
+
+
+
+
+
+//RUN TIME POLYMORPHISM :
+//achieved with "virtual functions"(called method or function overriding)
+//compiler postpones/defers the decision of which fucntion to be called to run time and when we
+//execute program then after that we know which fucntion is called according to the type of our pointer.
+//it decides at run time after program is executed that which fucntion will be bound
+
+//rules for method overriding
+//method of parent class and child class must have same name
+//same parameters
+//possible through inheritance only.
+
+class animal{
+public:
+    void speak(){
+        cout<<"speaking"<<endl;
+    }
+};
+
+
+class dog:public animal{
+public:
+    void speak(){
+        cout<<"barking"<<endl;
+    }
+};
+
+
+
+
+
+
+
+
+//POINTER TO DERIVED CLASS :
+//class baseclass{
+//public:
+//    int var1;
+//    void display(){
+//        cout<<"base class var 1: "<<var1<<endl;
+//    }
+//};
+//
+//
+//class derivedclass:public baseclass{
+//public:
+//    int var2;
+//    void display(){
+//        cout<<"base class var 1: "<<var1<<endl;
+//        cout<<"derived class var derived: "<<var2<<endl;
+//    }
+//};
+
+
+
+
+
+
+
+//VIRTUAL FUNCTIONS:
+class baseclass{
+public:
+    int var1;
+    virtual void display(){//by making it vurtual we say if pointer to derived clas calls display then
+        //dont run this one runt he derived clas one : runn time polymorphism (overriding)
+        cout<<"base class var 1: "<<var1<<endl;
+    }
+};
+
+
+class derivedclass:public baseclass{
+public:
+    int var2;
+    void display(){
+        cout<<"base class var 1: "<<var1<<endl;
+        cout<<"derived class var derived: "<<var2<<endl;
+    }
+};
+
+class der2:public derivedclass{
+public:
+    int var3;
+    void display(){
+        cout<<"base class var 1: "<<var1<<endl;
+        cout<<"derived class var derived: "<<var2<<endl;
+        cout<<"derived class var derived2: "<<var3<<endl;
+    }
+};
+
+
+
+
+//another example:
+//class cwh{
+//protected:
+//    string title;
+//    float rating;
+//public:
+//    cwh(string s,float f)
+//    {
+//        title=s;
+//        rating=f;
+//    }
+//    virtual void display(){}
+//
+//};
+//
+//
+//
+//class cwhvideo:public cwh{
+//    float vidlength;
+//public:
+//    cwhvideo(string s,float f,float v):cwh(s,f){
+//        vidlength=v;
+//    }
+//    void display()
+//    {
+//        cout<<"title : "<<title<<endl
+//        <<"ratings : "<<rating<<endl
+//        <<" length : "<<vidlength<<endl;
+//    }
+//
+//};
+//
+//
+//
+//class cwhwords:public cwh{
+//    int words;
+//public:
+//    cwhwords(string s,float f,int w):cwh(s,f){
+//        words=w;
+//    }
+//    void display(){
+//        cout<<"word tutorial with title : "<<title<<endl
+//        <<" rating : "<<rating<<endl<<" with words  : "<<words<<endl;
+//    }
+//
+//};
+
+//rules for virtual functions:
+//cant be static;
+//accessedby object pointers;
+//functions can be friend of another class;
+//virtual fucntion in base class might not be used that is no definition
+//if virtual function is defined in a base class there is no necessity of redefining in derived class;
+//that is if wee dont write the fucntion in derived class then base class version will run otherwise derived
+//one will run
+
+
+
+
+
+
+
+
+//PURE VIRTUAL FUNCTION AND ABSTRACT CLASSES :
+//in above example the base class cwh was made just so that we can inherit it and add some more fucntiions
+//to it in other classes such a class is called an ABSTRACT BASE CLASS;
+//to make an abstract class we need to make a function which we must overwrite
+//i.e ythere must be an implementation of the virtual fucntion in the derived class
+//i.e the base class one wont work even if there is no fucntion in derived one
+//for this  we have to make the fucntion a pure virtual function
+//in avove example weven if we erase siplay fucntion of cwhwords the display fucn of cwh base clas runs
+//so we dont need to necessarily define the fucntion but inorder to force an implemetation
+//we use pure virtual fucntions;
+
+
+class cwh{
+protected:
+    string title;
+    float rating;
+public:
+    cwh(string s,float f)
+    {
+        title=s;
+        rating=f;
+    }
+    virtual void display()=0;//do nothing function;pure virtual fucntion;
+    //it ensures there isnt any class where this fuction isnt implemented iinside the class itself
+    //becuase =0 menas the fucntion does nothing so compiler when it doesnt find any function in thr
+    //derived class looks for the fucntion in base class but there uit finds a do nothing function
+    //so basically it says that there is no fuction  of that name that performan operation
+    //so it forces us to define some code fornthe fucntioon in derived classes
+
+
+    //using a pure virtual function makes a clas abstract base class=which isused to make other classes
+    //and then we work on thise classes instead of the base one;you dont use this type of clas to create objects
+
+
+    //abstract class is a class which has at least one pure virtual function;
+};
+
+
+
+class cwhvideo:public cwh{
+    float vidlength;
+public:
+    cwhvideo(string s,float f,float v):cwh(s,f){
+        vidlength=v;
+    }
+    void display()
+    {
+        cout<<"title : "<<title<<endl
+            <<"ratings : "<<rating<<endl
+            <<" length : "<<vidlength<<endl;
+    }
+
+};
+
+
+
+class cwhwords:public cwh{
+    int words;
+public:
+    cwhwords(string s,float f,int w):cwh(s,f){
+        words=w;
+    }
+    void display(){
+        cout<<"word tutorial with title : "<<title<<endl
+            <<" rating : "<<rating<<endl<<" with words  : "<<words<<endl;
+    }
+
+};
+
+
+
+
+
+
+
+
+int main() {
+//static allocation :
+
+//    demo s1,s2;
+//    s1.name="Vishwash";
+//    s2.name="Random";
+//    s1.rollno=2544;
+//    s2.rollno=1234;
+//    s1.set_ph_no(11387);
+//    s1.set_age(20);
+//    s2.set_ph_no(123124);
+//    s2.set_age(23);
+
+
+
+
+
+//    cout<<"Name of s1 : "<<s1.name<<endl;
+//    cout<<"Name of s2 : "<<s2.name<<endl;
+//    cout<<"Roll no. of s1 : "<<s1.rollno<<endl;
+//    cout<<"Roll no. of s2 : "<<s2.rollno<<endl;
+//    cout<<"Phone no. of s1 : ";s1.get_ph_no();
+//    cout<<endl;
+//    cout<<"Phone no. of s2 : ";s2.get_ph_no();
+//    cout<<endl;
+//    cout<<sizeof(demo)<<endl;//size of demo = size of properties but empty class still has 1byte size
+//    cout<<sizeof(empt)<<endl;
+
+
+//dynamic allocation :
+
+//demo *d1=new demo;
+//cout<<"size of d1 : "<<sizeof(d1)<<endl;//size of the pointer = 8
+//cout<<"size of d2 : "<<sizeof(*d1)<<endl;//size of class/object referenced by the pointer
+//
+//(*d1).name="abc";//derefernec the pointer to use the object
+//cout<<"Name of d1 : "<<(*d1).name<<endl;
+//d1->set_age(31);
+//d1->get_age();
+//demo d2;
+
+
+
+
+//parameterized constructor :
+
+//demo d3("jdsbj",18);
+//
+//cout<<d3.name<<endl;
+
+
+//copy constructor :
+////It is inbuilt and is called default copy constructor but can also be created manually. It basically does :
+//// d4.name = d5.name and d4.rollno = d5..rollno
+//demo d4;
+//d4.set_age(19);
+//
+//demo d5(d4);
+//cout<<"Age of d4 : ";d4.get_age();
+//cout<<endl<<"Age of d5 : ";d5.get_age();
+//
+////Default copy constructor only creates a shallow copy
+////means that if value in one object changes it also changes in the other
+//d4.set_age(20);
+//cout<<"After changing : "<<endl;
+//cout<<"Age of d4 : ";d4.get_age();
+//cout<<endl<<"Age of d5 : ";d5.get_age();
+
+
+//
+//
+//demo d6("hello",122);
+//demo d7(d6);
+//
+//cout<<d6.name<<" "<<d7.name;
+//d6.name="bye";
+//
+//    cout<<endl<<d6.name<<" "<<d7.name;
+//
+////another way
+//demo d8;
+//d8=d7;
+//cout<<d8.name;
+
+
+//demo d9;
+
+//demo::static_counter+=1;
+//cout<<demo::static_counter;
+//cout<<demo::name; shows an error becuase name isnt static so we can only acces it though objects
+//demo::demostat();
+// other functions can acces and modify all tuypes
+//but static functions can only access static mmebers;
+
+//demo d10;
+//demo *d11=new demo;
+//
+//delete d11;//this will call destructor of d11;
+////cout<<"ends"<<endl;
+
+
+
+//demo d;
+//d.sayhello();
+
+
+//    vector<vector<int>> arr = {{1, 2, 3},
+//                               {4, 5, 6},
+//                               {7, 8, 9}};
+//
+//    int maxsum = INT_MIN;
+//    for (int i = 0; i < arr.size(); i++) {
+//        for (int j = 0; j < 3; j++) {
+//            maxsum = max(maxsum, i + j);
+//        }
+//    }
+//
+////
+//    map<int,vector<int>> ar;
+//    for (int i = 0; i < 3; i++) {
+//
+//        for (int j = 0; j < 3; j++) {
+//            vector<int> v;
+//            auto it=ar.find(i+j);
+//            if (it==ar.end())
+//            {
+//                cout<<"1st"<<arr[i][j]<<endl;
+//                v.push_back(arr[i][j]);
+//                ar[i+j]=v;
+//            }
+//            else
+//            {
+//                cout<<"second"<<arr[i][j]<<endl;
+//                v.push_back(arr[i][j]);
+//                auto it=ar.find(i+j);
+//                vector<int> temp=(*it).second;
+//                temp.insert(temp.end(),v.begin(),v.end());
+//                ar[i+j]=temp;
+//            }
+//
+//        }
+//    }
+//    cout<<ar.size()<<endl;
+////
+//    for (int i=0;i<maxsum;i++)
+//
+//    {
+//        for (int x:ar[i]){
+//        cout<<x<<endl;}
+//        cout<<endl;
+//
+//    }
+
+//vector<vector<int>> v;
+//
+//
+//
+//    v[0].push_back(0);
+//    v[0].push_back(1);
+//    v[1].push_back(2);
+//    v[2].push_back(1);
+//for (vector<int> vx:v)
+//{
+//    for (auto x: vx)
+//    {
+//        cout<<x<<" ";
+//    }
+//
+//}
+
+
+//friend functions;
+//complx c1,c2,sum;
+//    c1.set_number(1,4);
+//    c1.print_number();
+//    c2.set_number(4,8);
+//    c2.print_number();
+//    sum=sumcmp(c1,c2);
+//    sum.print_number();
+
+
+
+//friend class;
+//calculator c;
+//complx c1,c2;
+//c1.set_number(1,4);
+//c2.set_number(5,8);
+//int sumreal=c.sumrealcompc(c1,c2);
+//cout<<sumreal<<endl;
+//int sumcomp=c.sumcompcompc(c1,c2);
+//cout<<sumcomp;
+
+
+
+
+//memory allocation using arrays :
+
+
+//whenever you create a class it just occupies 1 byte  then its size changes acc to its objects
+//the compiler stores members which are common to every object in one place that is only one instance
+//is stored and shared with every object while the objects different for every object are given diff
+//memory spaces
+// Thats why variables have separate memeory for every object but functions are only stored in one space
+//and are common to every object
+//diagramatically :
+/*
+
+
+
+   o1     o2     o3
+ * * * * * * * * * * *
+ *  i  *   i   *  i  *
+ *  j  *   j   *  j  *   VARIABLES = STORED SEPARATELY FOR EACH OBJECT
+ *  k  *   k   *  k  *
+ *  l  *   l   *  l  *
+ * * * * * * * * * * *
+ *                   *
+ *  f1() f2() f3()   *   FUCNTIONS = STORED AT ONE PLACE AND ARE COMMON TO EVERY OBJECT
+ *                   *
+ *                   *
+ * * * * * * * * * * *
+
+
+
+
+ */
+
+//shop s1;
+//s1.initcounter();
+//s1.setpriceid();//you can also call all these inside a loop
+//s1.setpriceid();
+//s1.setpriceid();
+//s1.getpriceandid();
+
+
+
+
+
+
+
+
+
+//OBJECT ARRAYS AND ARGUMENTS :
+
+//employee e1,e2,e3; //manually
+//e1.setid();
+//e2.setid();
+//e3.setid();
+//e1.getid();
+//e2.getid();
+//e3.getid();
+
+
+//    employee company[3]; //this will create an array of objects
+//    for (int i = 0; i < 3; i++)//now we can loop
+//    {
+//
+//        company[i].setid();
+//        company[i].getid();
+//    }
+
+
+ //passing arguments
+// complex2 c1,c2,c3;
+//    c1.setdata(1,2);
+//    c2.setdata(2,3);
+//
+//
+//c3.setdatabysum(c1,c2);
+//c1.printnumber();
+//c2.printnumber();
+//c3.printnumber();
+
+
+
+
+
+//more on frined functions :
+//x o1;
+//y o2;
+//o1.setvalue(6);
+//o2.setvalue(5);
+//add(o1,o2);
+//
+//
+//c1 a;
+//c2 b;
+//a.indata(3);
+//b.indata(4);
+//a.display();
+//b.display();
+//exchange(a,b);
+//a.display();
+//b.display();
+
+
+
+//CONSTRUCTOR OVERLOADING :
+
+//overloading o1;
+//o1.print();
+//overloading o2(3,4);
+//o2.print();
+//overloading o3(3);
+//o3.print();
+
+
+
+
+//CONSTRUCTOR WITH DEFAULT ARGUMENTS :
+
+//simple s(1,2);
+//simple s2(1);
+//s.printdata();
+//s2.printdata();
+
+
+
+//DYNAMIC INITIALIZATION OF OBJECTS USING CONSTRUCTOR : achieved through constructor overloading
+
+//bankdeposit bd1,bd2,bd3;
+//int p,y;
+//float r;
+//int R;
+//cout<<"Enter the value of p , y and r : ";
+//cin>>p>>y>>r;
+//bd1=bankdeposit(p,y,r);//we created this object dynamically based omn the values;
+//
+//bd1.show();
+//cout<<"Enter the value of p , y and R : ";
+//cin>>p>>y>>R;
+//bd2=bankdeposit(p,y,R);//we created this object dynamically based omn the values;
+//bd2.show();
+
+
+//UNDERSTANDING COPY CONSTRUCTOR :
+//cpy c1,c2;
+//char n[6]="hello";
+//c1.setname(n);
+//c1.getname();
+//string s="jjjj";
+//
+//c1.x=&s;
+//c2=c1;
+//cpy c(c1);//cant do tjis for c2
+//c2.getname();
+//c.getname();
+//
+//c1.name[0]='j';
+//    c1.getname();
+//    c2.getname();
+//    c.getname();
+//    cout<<*(c1.x)<<" "<<*(c2.x)<<endl;
+//c1.x[0]='k';
+//
+//    cout<<*(c1.x)<<" "<<*(c2.x)<<endl;
+//    string s2="jksdhfjk";
+//    c1.x=&s2;
+//    cout<<*(c1.x)<<" "<<*(c2.x)<<endl;
+////    cout<<c2.x<<endl;
+
+
+
+
+
+
+//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA INHERTICANCE :
+
+
+//emp e1(1),e2(2),e3(3);
+//
+//prog skill(1);// if a custom constructor is made in  base class it gets inherited
+////            but this constructor will be for base class so the
+////            compiler wont be able to find a constructor and
+////            without a constructor it shows an error. So we need to make a custom constructor for it as well
+////            BUT if we dont make a custom constructor in base class then since no connstructor is inherited
+////            the compiler doesnt find a custom cosntructor in derived class and so assigns one to it
+////            and hence it wont thorw an error
+//
+//
+//cout<<skill.languagecode<<endl;
+////note : you still cant access the derived member sdirectly if you inherit privately
+//// you need to access them thropugh getter functions in derived class not base class
+////if we inherit it publicly then we can do it directly
+//skill.getdata();//need to make a fucntion to access the data from base class
+
+//dr2 in;
+//in.setid(1);// if we inherit publicly we can access duirectly;
+//in.id;
+
+
+
+
+//SINGLE INHERITANCE :
+//derived der;
+//der.setdata();//here we call function of base class from a derived class
+//der.process();
+//der.display();
+
+
+
+
+
+//PROTECTED :
+//base b;
+//derived d;
+//cout<<d.a;  will not work becuase a is protected in both base and derived  but if we have a member
+             // in derived we can access it through it
+
+
+
+//MULTI LEVEL INHERITANCE :
+
+//result s1;
+//s1.set_rnum(1);
+//s1.set_marks(98,99);
+//s1.display();
+
+
+
+
+
+//MULTIPLE INHERITANCE :
+
+//derived d1;
+//d1.set_base1int(25);
+//d1.set_base2int(5);
+//d1.show();
+
+
+
+
+
+//AMBIGUITY RESOLUTION IN INHERITANCE
+//ambiguity 1 :
+//b1 o1;
+//b2 o2;
+//o1.greet();
+//o2.greet();
+//d o3;
+////o3.greet();//this will result in ambiguity now we need to tell which funcionto call;
+//o3.greet();
+
+//ambiguity 2 :
+bd b1;
+dd d1;
+b1.say();
+d1.say();//when a derived class has a function of same name as a function in base class
+//         then the fucntion in base class is overrriden automatically solving the ambiguity and
+//         so derived class fucntion is used;
+//         if there isnt any function of the same name then the one in base is used
+
+
+
+
+//hybrid inheritance:
+//in hybrid inheritance we get a problem called the diamon problem
+//    *                A   EMPLOYEE
+//    *                |
+//    *                |                         |
+//    *                V
+//    *          -------------
+//    *          |           |
+//    *          |           |
+//    *          V           V
+//    *   PROG   B           C   ADMIN
+//    *          |           |
+//    *          |           |
+//    *          V           V                           so b and c inherit members from a
+//    *          -------------                           and d inherits members of b and c
+//    *                |                                 but it will inherit members of a twice
+//    *                |                                 to resolve this issue we use virtual base class
+//    *                V
+//    *                D
+//    *             MANAGER
+
+//
+//res r1;
+//r1.set_num(1);
+//r1.set_marks(91,93);
+//r1.set_score(139);
+//r1.display();
+
+
+
+
+
+
+
+//ORDER OF EXECUTION:
+//d2_0 h(1,2,3,4);
+//h.printdata();
+
+
+
+
+
+
+////array of objects
+//arrayclass o1[6];
+//for (int i=0;i<6;i++)
+//
+//{
+//    cout<<"Enter p and q for "<<i+1<<" : ";
+//    cin>>o1[i].p>>o1[i].q;
+//}
+//
+//for (int j=0;j<6;j++)
+//{
+//    cout<<"p : "<<o1[j].p<<" q : "<<o1[j].q<<endl;
+//}
+//
+//
+//
+//arrayclass *a=new arrayclass[6];
+//arrayclass *temp=a;
+//for (int k=0;k<6;k++)
+//{
+//    cout<<"Enter for pointer object : "<<k+1<<" : ";
+//    cin>>(*temp).p;
+//    cin>>temp->q;
+//    temp++;
+//}
+//
+//for (int l=0;l<6;l++)
+//{
+//    cout<<"The value of pointer object for "<<l+1<< " p : "<<(*a).p<<" q : "<<(*a).q<<endl;
+//    a++;
+//}
+
+
+
+//POLYMORPHISM :
+//COMPILE TIME :
+//fucntion overloading :
+poly1 a;
+a.sayhello();//this is an example of achiuevong compile tiem polymorphism using fucntion overloading
+a.sayhello("vishwash");//2 functions of same name but different parameters and do diff operations
+//note if only return type is changed it cant be overloaded
+
+
+a.sayhello(2,"two");//but function with diff returnn typoe and different parameters can be overloaded
+
+
+//operator overloading :
+//
+//poly1 p1,p2;
+//p1.a=5;
+//p2.a=1;
+//p1+p2;//works on objects and even other things
+//
+//p1-p2.a; // NOTE  : in overloading by default the first operand is the object not any value in it
+//// so be careful with the input you take in operator and also  in the main code
+//
+//cout<<p1*p2.a<<endl;
+//
+//p1();//unary operator doensnt take input
+
+//RUN TIME: DYNAMIC POLYMORPHISM :
+//we only know that which function will be called during run time
+
+
+
+
+
+
+//dog d;
+//d.speak();//this is an example of runtime polymorphism
+//the compiler sees that speak function of dog class is needed and there is one available in it so it
+//calls that function of the dog class
+//but if we hadnt made speak functionnthe compiler will decide that spoeak funciton is needed from dog
+//and since there is no speak function of dog class that is its own it calls the speak function of
+//the parent class which is inherited
+
+
+
+
+
+//POINTER TO DERIVED CLASS: ot is also an exampe of run time polymorphism
+//baseclass *pointer;//the pointer points to object of base class
+//baseclass obbase;//
+//derivedclass obderived;
+//
+//pointer=&obderived;//in cpp a base class pointer can point to OBJECT OF DERIVED CLASS
+////but if we call a function which has same name in both classes then the base class one will run
+////because the pointer is declared to point to bbase class but it just has address of derived one
+////so during runtime it sees the objects of base class first
+////runtime polymorphism;
+//    (*pointer).display();//basically for this call it looks at the inherited memebrs of derived class
+//    //that is the members that are of the type of data that the pointer can point to;
+////if we dont define that fubction in base class then it will shjow error. in any case the pointer
+////wont point to members exlusive to derived class
+//    (*pointer).var1=6;
+//
+//
+//    derivedclass *der;//this pointer points to object of derived class so it will have acces to both derived and
+//    //base members
+//    der=&obderived;
+//    der->var2=98;
+//  //runtime polymorphism
+//    der->display();
+//    der->var1;
+
+
+
+
+
+
+//VIRTUAL FUNCTIONS: changes the default behaviour of pointer to deirved claass
+//
+//baseclass *point;
+//baseclass objbase;
+//derivedclass objderived;
+//
+//point=&objderived;
+//
+//point->display();//without virtual the base class fucntion runs only
+                 //by writng virtual before funtion we tell the compiler that if
+                 // a pointer of baseclass points to derived class thrn if a function is called dont call
+                 //fucntion of base class instead call the one in derived one
+
+
+//derivedclass *p;//also works for multilevel inheritance only need to make virtual dunc in base class
+//derivedclass ob1;
+//der2 obder2;
+//p=&obder2;
+//p->display();
+
+
+string title;
+float rating,vl;
+int words;
+
+title="java";
+vl=24.56;
+rating=4.9;
+words=500;
+
+cwhvideo video1(title,rating,vl);
+video1.display();//this will give prefernce to the display function of cwhvideo no matter if virtual is
+//written or not
+
+
+
+cwhwords text1( title+" text ",rating,words);
+text1.display();
+
+cout<<endl<<"pointers : "<<endl;
+
+cwh *p1[2];
+p1[0]=&video1;
+p1[1]=&text1;
+
+p1[0]->display();//the derived display works this is because of virtaul ketword
+p1[1]->display();//same thging happens here
+//if we remove vurtual keyword the cosntructor for base class will run because pointer is of cwh type
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//ENCAPSULATION:
+//encapsulating data members and fucntions
+//hides data
+//security
+//read only mode can be set
+//reusability
+//easy amangement
+//comolete encapsulation: make all memebr sprivate
+
+
+//ABSTRACTION:
+//implementation hiding: only show essential things eg apps in daily life
+//advantages:
+// only you can make changes
+//provides secuity
+//increases reliability
+//aboids duplication of code
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
